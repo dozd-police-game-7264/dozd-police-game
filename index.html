@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دزد و پلیس</title>
+<style>
+body{margin:0;background:#101426;color:white;font-family:Tahoma,Arial;text-align:center;padding:20px}
+.box{max-width:420px;margin:30px auto;background:#1b2440;padding:22px;border-radius:20px}
+h1{color:#ffd54a}
+button,input,select{box-sizing:border-box;width:100%;padding:13px;margin:8px 0;border:0;border-radius:10px;font:inherit}
+button{background:#ffd54a;color:#172036;font-weight:bold}
+input,select{background:#101426;color:white;border:1px solid #435577}
+#message{line-height:2}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>🕵️ دزد و پلیس 💰</h1>
+<p>به بازی خوش آمدی!</p>
+<div id="login">
+<input id="name" maxlength="20" placeholder="اسم بازیکن">
+<button onclick="login()">ورود به بازی</button>
+</div>
+<div id="game" hidden>
+<h2 id="welcome"></h2>
+<p>🪙 سکه‌ها: <b id="coins">500</b></p>
+<label for="count">تعداد بازیکنان</label>
+<select id="count">
+<option>3</option><option selected>4</option><option>5</option>
+<option>6</option><option>7</option><option>8</option>
+</select>
+<button onclick="start()">🎴 شروع بازی</button>
+<p id="message">برای شروع، دکمه را بزن.</p>
+<div id="players"></div>
+</div>
+</div>
+<script>
+let player="",coins=500,roles=[],seen=new Set(),thief=-1;
+function login(){
+ player=document.getElementById("name").value.trim();
+ if(!player){alert("اسمت رو وارد کن");return}
+ document.getElementById("login").hidden=true;
+ document.getElementById("game").hidden=false;
+ document.getElementById("welcome").textContent="خوش اومدی "+player;
+}
+function start(){
+ let n=Number(document.getElementById("count").value);
+ roles=Array(n).fill("شهروند");
+ seen.clear();
+ let ids=Array.from({length:n},(_,i)=>i).sort(()=>Math.random()-.5);
+ thief=ids[0]; roles[thief]="دزد";
+ roles[ids[1]]="پلیس";
+ document.getElementById("players").replaceChildren();
+ for(let i=0;i<n;i++){
+  let b=document.createElement("button");
+  b.textContent="بازیکن "+(i+1)+" — دیدن نقش";
+  b.onclick=()=>{
+   if(seen.has(i))return;
+   seen.add(i);
+   b.textContent="بازیکن "+(i+1)+": "+roles[i];
+   if(seen.size===n){
+    document.getElementById("message").textContent=
+    "همه نقش‌ها دیده شدند! دزد بازیکن "+(thief+1)+" بود.";
+    coins+=10;
+    document.getElementById("coins").textContent=coins;
+   }
+  };
+  document.getElementById("players").appendChild(b);
+ }
+ document.getElementById("message").textContent=
+ "هر بازیکن به نوبت نقش خودش را ببیند.";
+}
+</script>
+</body>
+  </html>
